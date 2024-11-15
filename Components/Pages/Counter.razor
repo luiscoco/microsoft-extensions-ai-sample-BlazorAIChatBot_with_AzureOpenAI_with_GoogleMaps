@@ -1,0 +1,38 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+
+@using BlazorAIChatBot_with_AzureOpenAI.Service
+@inject CounterService CounterService
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @CounterService.CurrentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Subscribe to the counter change event
+        CounterService.OnCountChanged += UpdateCount;
+    }
+
+    private void IncrementCount()
+    {
+        CounterService.IncrementCount();
+    }
+
+    private async void UpdateCount()
+    {
+        // Use InvokeAsync to ensure we are on the main UI thread
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from the counter change event when the component is disposed
+        CounterService.OnCountChanged -= UpdateCount;
+    }
+}

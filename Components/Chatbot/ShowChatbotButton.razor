@@ -1,0 +1,23 @@
+﻿@inject NavigationManager Nav
+
+<a class="show-chatbot" @onclick="ToggleChatbot" title="Show chatbot"></a>
+
+@if (ShowChat)
+{
+    <Chatbot />
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "chat")]
+    public bool ShowChat { get; set; }
+
+    private void ToggleChatbot()
+    {
+        // Update the ShowChat state
+        ShowChat = !ShowChat;
+
+        // Update the URL without triggering a navigation
+        var uri = Nav.GetUriWithQueryParameter("chat", ShowChat);
+        Nav.NavigateTo(uri, forceLoad: false); // Avoid full reload
+    }
+}
